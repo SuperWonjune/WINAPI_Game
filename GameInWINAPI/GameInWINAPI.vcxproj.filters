@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\GameObjects">
+      <UniqueIdentifier>{1606a629-1b04-42d0-bb1b-141160ef5b42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects">
+      <UniqueIdentifier>{82503ca1-088a-4f51-90d7-f3ca8cec6c7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Managers">
+      <UniqueIdentifier>{66cfad53-c019-415e-bdda-6597ee992265}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Managers">
+      <UniqueIdentifier>{4a2846d4-2800-45c8-88bf-83d71bb1ff50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -30,14 +42,23 @@
     <ClInclude Include="GameInWINAPI.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CScreenDib.h">
+    <ClInclude Include="DefineEnum.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CScreenDib.h">
+      <Filter>헤더 파일\Managers</Filter>
     </ClInclude>
     <ClInclude Include="CSpriteDib.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Managers</Filter>
     </ClInclude>
     <ClInclude Include="FrameCheck.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>헤더 파일\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseObject.h">
+      <Filter>헤더 파일\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -48,13 +69,19 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CScreenDib.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Managers</Filter>
     </ClCompile>
     <ClCompile Include="CSpriteDib.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Managers</Filter>
     </ClCompile>
     <ClCompile Include="FrameCheck.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseObject.cpp">
+      <Filter>소스 파일\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
