@@ -80,8 +80,8 @@ BOOL CSpriteDib::LoadDibSprite(int iSpriteIndex, WCHAR *szFileName, int iCenterP
 			}
 			delete[] bypTempBuffer;
 
-			m_stpSprite[iSpriteIndex].iCenterPointX - iCenterPointX;
-			m_stpSprite[iSpriteIndex].iCenterPointY - iCenterPointY;
+			m_stpSprite[iSpriteIndex].iCenterPointX = iCenterPointX;
+			m_stpSprite[iSpriteIndex].iCenterPointY = iCenterPointY;
 			CloseHandle(hFile);
 			return TRUE;
 		}
@@ -140,7 +140,7 @@ void CSpriteDib::DrawSprite(int iSpriteIndex, int iDrawX, int iDrawY,
 	// »ó´Ü
 	if (0 > iDrawY) {
 		iSpriteHeight = iSpriteHeight - (-iDrawY);
-		dwpSprite = (DWORD *)(stpSprite->bypImage + stpSprite->iPitch * (iDrawY));
+		dwpSprite = (DWORD *)(stpSprite->bypImage - stpSprite->iPitch * (iDrawY));
 
 		iDrawY = 0;
 	}

@@ -20,6 +20,7 @@ Game::~Game()
 void Game::update(void)
 {
 	pSceneManager->update();
+	Sleep(20);
 }
 
 

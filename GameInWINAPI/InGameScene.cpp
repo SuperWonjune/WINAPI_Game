@@ -33,7 +33,19 @@ void InGameScene::update()
 
 void InGameScene::getInput()
 {
+	DWORD dwAction = 0;
 
+	if (GetAsyncKeyState(VK_LEFT) & 0x8001) dwAction = dfACTION_MOVE_LL;
+	if (GetAsyncKeyState(VK_UP) & 0x8001) dwAction = dfACTION_MOVE_UU;
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8001) dwAction = dfACTION_MOVE_RR;
+	if (GetAsyncKeyState(VK_DOWN) & 0x8001) dwAction = dfACTION_MOVE_DD;
+	if ((GetAsyncKeyState(VK_LEFT) & 0x8001) && (GetAsyncKeyState(VK_UP) & 0x8001)) dwAction = dfACTION_MOVE_LU;
+	if ((GetAsyncKeyState(VK_RIGHT) & 0x8001) && (GetAsyncKeyState(VK_UP) & 0x8001)) dwAction = dfACTION_MOVE_RU;
+	if ((GetAsyncKeyState(VK_RIGHT) & 0x8001) && (GetAsyncKeyState(VK_DOWN) & 0x8001)) dwAction = dfACTION_MOVE_RD;
+	if ((GetAsyncKeyState(VK_LEFT) & 0x8001) && (GetAsyncKeyState(VK_DOWN) & 0x8001)) dwAction = dfACTION_MOVE_LD;
+
+	pPlayer->ActionInput(dwAction);
+	
 }
 
 void InGameScene::draw(void)
@@ -63,7 +75,7 @@ BOOL InGameScene::InitGame(void)
 
 
 	// 플레이어 객체 생성 및 초기 설정
-	initPlayer(0, 0);
+	initPlayer(150, 150);
 
 	return TRUE;
 }
