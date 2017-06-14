@@ -14,41 +14,11 @@ TODO : 게임 클래스 따로 분리
 #include "stdafx.h"
 #include "GameInWINAPI.h"
 
-// GameSettings
-#include "CScreenDib.h"
-#include "CSpriteDib.h"
-#include "FrameCheck.h"
-#include "DefineEnum.h"
+#include "Game.h"
 
-// InGameObjects
-#include "Player.h"
-#include "BaseObject.h"
 
 // 윈도우 관련 세팅
 #define MAX_LOADSTRING 100
-
-// 게임 내 옵션 세팅
-#define GAME_WIDTH 640
-#define GAME_HEIGHT 480
-#define GAME_COLOR_BIT 32
-#define FRAME_PER_SECOND 50
-
-// --------------------------------------------------------------------------------
-// 게임 관련 변수
-// --------------------------------------------------------------------------------
-CScreenDib g_cScreenDib(GAME_WIDTH, GAME_HEIGHT, GAME_COLOR_BIT);          // ScreenDIB 객체
-CSpriteDib g_cSpriteDib(100, 0x00ffffff); // SpriteDib 객체
-FrameCheck g_frameCheck(FRAME_PER_SECOND);
-
-// 현재 스테이지
-GameState cur_GameState = Title;
-
-// 게임 관련
-// 모든 오브젝트 리스트
-std::list<BaseObject> g_ObjectList;
-
-// 플레이어 객체
-Player * player;
 
 
 // 전역 변수:
@@ -65,6 +35,8 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+
 
 
 
@@ -97,10 +69,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
+
+
+	// 게임 변수 초기화
+	Game TCPFighter(&hWnd);
 	//
     // 기본 메시지 루프
 	// 게임용으로 수정.
 	// message를 받지 않아도 게임은 계속해서 돌아가야하는 구조
+	// 이 부분만 빼고는 기본 win API 세팅들은 최대한 건드리지 않았음.
 
 	while (1)
 	{
@@ -114,7 +91,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		else
 		{
 			// 게임 처리
-			update();
+			TCPFighter.update();
 		}
 
 
@@ -244,269 +221,4 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
-}
-
-
-
-
-// --------------------------------------------------------------------------------
-// 게임 처리 관련 함수 선언
-// --------------------------------------------------------------------------------
-
-BOOL InitGame(void)
-{
-	// 이 함수들은 타이틀화면에서 호출된다.
-	
-	// 스프라이트 로딩
-	if (LoadSprites() == FALSE) return FALSE;
-	
-	// 플레이어 객체 생성 및 초기 설정
-	player = new Player(50,50);
-
-	// 게임 시작, 스테이지 변경
-	setToNextStage(cur_GameState);
-
-	return TRUE;
-}
-
-BOOL LoadSprites(void)
-{
-	// 스프라이트 로딩
-
-	// STANDING_LEFT
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::eMAP, L"\SpriteData\\_Map.bmp", 0, 0))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_STAND_L01, L"\SpriteData\\Stand_L_01.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_STAND_L02, L"\SpriteData\\Stand_L_02.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_STAND_L03, L"\SpriteData\\Stand_L_03.bmp", 71, 90))
-		return FALSE;
-
-	/*
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_STAND_L04, L"\SpriteData\\Stand_L_04.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_STAND_L05, L"\SpriteData\\Stand_L_05.bmp", 71, 90))
-		return FALSE;
-	*/
-
-	// STANDING_RIGHT
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_STAND_R01, L"\SpriteData\\Stand_R_01.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_STAND_R02, L"\SpriteData\\Stand_R_02.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_STAND_R03, L"\SpriteData\\Stand_R_03.bmp", 71, 90))
-		return FALSE;
-	/*
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_STAND_R04, L"\SpriteData\\Stand_R_04.bmp", 71, 90))
-	return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_STAND_R05, L"\SpriteData\\Stand_R_05.bmp", 71, 90))
-	return FALSE;
-	*/
-
-	// MOVING_LEFT
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L01, L"\SpriteData\\Move_L_01.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L02, L"\SpriteData\\Move_L_02.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L03, L"\SpriteData\\Move_L_03.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L04, L"\SpriteData\\Move_L_04.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L05, L"\SpriteData\\Move_L_05.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L06, L"\SpriteData\\Move_L_06.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L07, L"\SpriteData\\Move_L_07.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L08, L"\SpriteData\\Move_L_08.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L09, L"\SpriteData\\Move_L_09.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L10, L"\SpriteData\\Move_L_10.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L11, L"\SpriteData\\Move_L_11.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_L12, L"\SpriteData\\Move_L_12.bmp", 71, 90))
-		return FALSE;
-
-
-	//MOVING_RIGHT
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R01, L"\SpriteData\\Move_R_01.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R02, L"\SpriteData\\Move_R_02.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R03, L"\SpriteData\\Move_R_03.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R04, L"\SpriteData\\Move_R_04.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R05, L"\SpriteData\\Move_R_05.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R06, L"\SpriteData\\Move_R_06.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R07, L"\SpriteData\\Move_R_07.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R08, L"\SpriteData\\Move_R_08.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R09, L"\SpriteData\\Move_R_09.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R10, L"\SpriteData\\Move_R_10.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R11, L"\SpriteData\\Move_R_11.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_MOVE_R12, L"\SpriteData\\Move_R_12.bmp", 71, 90))
-		return FALSE;
-
-	//ATTACKING1_LEFT
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK1_L01, L"\SpriteData\\Attack1_L_01.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK1_L02, L"\SpriteData\\Attack1_L_02.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK1_L03, L"\SpriteData\\Attack1_L_03.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK1_L04, L"\SpriteData\\Attack1_L_04.bmp", 71, 90))
-		return FALSE;
-
-	//ATTACKING1_RIGHT
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK1_R01, L"\SpriteData\\Attack1_R_01.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK1_R02, L"\SpriteData\\Attack1_R_02.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK1_R03, L"\SpriteData\\Attack1_R_03.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK1_R04, L"\SpriteData\\Attack1_R_04.bmp", 71, 90))
-		return FALSE;
-
-	//ATTACKING2_LEFT
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK2_L01, L"\SpriteData\\Attack2_L_01.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK2_L02, L"\SpriteData\\Attack2_L_02.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK2_L03, L"\SpriteData\\Attack2_L_03.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK2_L04, L"\SpriteData\\Attack2_L_04.bmp", 71, 90))
-		return FALSE;
-
-	//ATTACKING2_RIGHT
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK2_R01, L"\SpriteData\\Attack2_R_01.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK2_R02, L"\SpriteData\\Attack2_R_02.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK2_R03, L"\SpriteData\\Attack2_R_03.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK2_R04, L"\SpriteData\\Attack2_R_04.bmp", 71, 90))
-		return FALSE;
-
-
-	//ATTACKING3_LEFT
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_L01, L"\SpriteData\\Attack3_L_01.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_L02, L"\SpriteData\\Attack3_L_02.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_L03, L"\SpriteData\\Attack3_L_03.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_L04, L"\SpriteData\\Attack3_L_04.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_L05, L"\SpriteData\\Attack3_L_05.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_L06, L"\SpriteData\\Attack3_L_06.bmp", 71, 90))
-		return FALSE;
-
-	//ATTACKING3_RIGHT
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_R01, L"\SpriteData\\Attack3_R_01.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_R02, L"\SpriteData\\Attack3_R_02.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_R03, L"\SpriteData\\Attack3_R_03.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_R04, L"\SpriteData\\Attack3_R_04.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_R05, L"\SpriteData\\Attack3_R_05.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::ePLAYER_ATTACK3_R06, L"\SpriteData\\Attack3_R_06.bmp", 71, 90))
-		return FALSE;
-
-	//EFFECT_SPARK
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::eEFFECT_SPARK_01, L"\SpriteData\\xSpark_1.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::eEFFECT_SPARK_02, L"\SpriteData\\xSpark_2.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::eEFFECT_SPARK_03, L"\SpriteData\\xSpark_3.bmp", 71, 90))
-		return FALSE;
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::eEFFECT_SPARK_04, L"\SpriteData\\xSpark_4.bmp", 71, 90))
-		return FALSE;
-
-	//HP_GUAGE
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::eGUAGE_HP, L"\SpriteData\\HPGuage.bmp", 71, 90))
-		return FALSE;
-
-	//SHADOW
-	if (!g_cSpriteDib.LoadDibSprite(e_SPRITE::eSHADOW, L"\SpriteData\\Shadow.bmp", 71, 90))
-		return FALSE;
-	
-
-	// END_LOADING
-
-	// 모두 로딩 성공
-	return TRUE;
-}
-
-void setToNextStage(GameState &curGameState)
-{
-	// 타이틀일 경우
-	if (curGameState = Title) {
-		// 게임 시작
-		curGameState = InGame;
-	}
-}
-
-void update(void)
-{
-	switch (cur_GameState) {
-
-	case Title:
-		InitGame();
-	case InGame:
-		updateGame();
-		break;
-	}
-
-}
-
-void updateGame(void)
-{
-
-	KeyProcess();
-	Action();
-
-	if (g_frameCheck.checkFrame()) {
-		Draw();
-	}
-}
-
-void KeyProcess(void)
-{
-
-
-}
-
-void Action(void)
-{
-
-
-}
-
-void Draw(void)
-{
-	BYTE *pDest = g_cScreenDib.GetDibBuffer();
-	int iWidth = g_cScreenDib.GetWidth();
-	int iHeight = g_cScreenDib.GetHeight();
-	int iPitch = g_cScreenDib.GetPitch();
-
-	g_cSpriteDib.DrawImage(e_SPRITE::eMAP, 0, 0, pDest, iWidth, iHeight, iPitch);
-	g_cSpriteDib.DrawSprite(e_SPRITE::ePLAYER_STAND_L01, player->getX(), player->getY(), pDest, iWidth, iHeight, iPitch);
-
-	// 버퍼 flip
-	g_cScreenDib.DrawBuffer(hWnd);
-
 }

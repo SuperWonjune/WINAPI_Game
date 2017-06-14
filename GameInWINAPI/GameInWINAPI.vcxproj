@@ -23,7 +23,7 @@
     <ProjectGuid>{84BA9599-1741-44FA-B847-01FB91977CC2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GameInWINAPI</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -142,26 +142,38 @@
     <ClInclude Include="CSpriteDib.h" />
     <ClInclude Include="DefineEnum.h" />
     <ClInclude Include="FrameCheck.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameInWINAPI.h" />
+    <ClInclude Include="GameOverScene.h" />
+    <ClInclude Include="InGameScene.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="CScreenDib.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="CSpriteDib.cpp" />
     <ClCompile Include="FrameCheck.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameInWINAPI.cpp" />
     <ClCompile Include="CScreenDib.cpp" />
+    <ClCompile Include="GameOverScene.cpp" />
+    <ClCompile Include="InGameScene.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameInWINAPI.rc" />
