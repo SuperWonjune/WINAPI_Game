@@ -21,19 +21,21 @@ InGameScene::~InGameScene()
 void InGameScene::update()
 {
 	// 입력
-	getInput();
+	KeyProcess();
 
 	// 로직
-	ObjectListAction();
+	Action();
 
 	// 출력
 	draw();
 
 }
 
-void InGameScene::getInput()
+void InGameScene::KeyProcess()
 {
-	DWORD dwAction = 0;
+	// 기본값으로 STAND를 주는게 맞는건가?
+	// 문제점 : 매 프레임마다 호출되는 함수이므로 공격 같은 동작이 아직 끝나지 않았는데도 ActionInput엔 STAND 값이 들어간다.
+	DWORD dwAction = dfACTION_STAND;
 
 	if (GetAsyncKeyState(VK_LEFT) & 0x8001) dwAction = dfACTION_MOVE_LL;
 	if (GetAsyncKeyState(VK_UP) & 0x8001) dwAction = dfACTION_MOVE_UU;
@@ -44,11 +46,18 @@ void InGameScene::getInput()
 	if ((GetAsyncKeyState(VK_RIGHT) & 0x8001) && (GetAsyncKeyState(VK_DOWN) & 0x8001)) dwAction = dfACTION_MOVE_RD;
 	if ((GetAsyncKeyState(VK_LEFT) & 0x8001) && (GetAsyncKeyState(VK_DOWN) & 0x8001)) dwAction = dfACTION_MOVE_LD;
 
+	// Z키
+	if (GetAsyncKeyState(0x5A) & 0x8001) dwAction = dfACTION_ATTACK1;
+	// X키
+	if (GetAsyncKeyState(0x58) & 0x0001) dwAction = dfACTION_ATTACK2;
+	// C키
+	if (GetAsyncKeyState(0x43) & 0x0001) dwAction = dfACTION_ATTACK3;
+
+
 	pPlayer->ActionInput(dwAction);
-	
 }
 
-void InGameScene::draw(void)
+void InGameScene::draw()
 {
 	BYTE *pDest = g_cScreenDib.GetDibBuffer();
 	int iWidth = g_cScreenDib.GetWidth();
@@ -58,12 +67,24 @@ void InGameScene::draw(void)
 	// map 그리기
 	g_cSpriteDib.DrawImage(e_SPRITE::eMAP, 0, 0, pDest, iWidth, iHeight, iPitch);
 
-	// player 그리기
-	g_cSpriteDib.DrawSprite(e_SPRITE::ePLAYER_STAND_L01, pPlayer->getX(), pPlayer->getY(), pDest, iWidth, iHeight, iPitch);
-
+	// 리스트 순환하면서 각 객체들 draw
+	for (iter = objectList.begin(); iter != objectList.end(); ++iter) {
+		(*iter)->draw(&g_cSpriteDib, pDest, iWidth, iHeight, iPitch);
+	}
+	
 	// 버퍼 flip
 	g_cScreenDib.DrawBuffer(*pHWnd);
 }
+
+
+void InGameScene::Action()
+{
+	for (iter = objectList.begin(); iter != objectList.end(); ++iter) (*iter)->Action();
+
+	// y좌표 기준으로 정렬, 이펙트 종류는 제일 뒤로 정렬
+
+}
+
 
 
 
@@ -75,7 +96,7 @@ BOOL InGameScene::InitGame(void)
 
 
 	// 플레이어 객체 생성 및 초기 설정
-	initPlayer(150, 150);
+	initPlayer(300, 200);
 
 	return TRUE;
 }
@@ -257,7 +278,7 @@ BOOL InGameScene::LoadSprites(void)
 	return TRUE;
 }
 
-void InGameScene::initPlayer(int xLoc = 0, int yLoc = 0)
+void InGameScene::initPlayer(int xLoc, int yLoc)
 {
 	// 플레이어 객체 생성 및 할당
 	pPlayer = new Player(xLoc, yLoc);
@@ -268,16 +289,5 @@ void InGameScene::initPlayer(int xLoc = 0, int yLoc = 0)
 }
 
 
-
-
-void InGameScene::ObjectListAction()
-{
-	//for (iter = objectList.begin(); iter != objectList.end(); ++iter) (*iter)->Action();
-}
-
-void InGameScene::ObjectListDraw()
-{
-	//for (iter = objectList.begin(); iter != objectList.end(); ++iter) (*iter)->Draw();
-}
 
 

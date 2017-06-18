@@ -45,7 +45,6 @@ public:
 	virtual ~Scene();
 
 	virtual void update() = 0;
-	virtual void getInput() = 0;
 
 	bool isReadyForNextScene();
 	void setReadyToNotReady();
