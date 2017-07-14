@@ -37,9 +37,6 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 
-
-
-
 // --------------------------------------------------------------------------------
 // 윈도우 관련 함수선언
 // --------------------------------------------------------------------------------
@@ -49,6 +46,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
+	timeBeginPeriod(1);
+
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -96,6 +95,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	}
+
+	timeEndPeriod(1);
     return (int) msg.wParam;
 }
 

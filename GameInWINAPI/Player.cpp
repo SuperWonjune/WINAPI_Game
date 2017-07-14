@@ -248,3 +248,11 @@ void Player::SetActionAttack3()
 		SetSprite(ePLAYER_ATTACK3_R01, ePLAYER_ATTACK3_R_MAX, dfDELAY_ATTACK3);
 	}
 }
+
+
+
+void Player::CheckBoundary()
+{
+
+
+}

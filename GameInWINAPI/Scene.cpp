@@ -8,7 +8,7 @@
 
 Scene::Scene(HWND * ipHWnd) :
 	// 매니저 객체들 초기화
-	g_cScreenDib(GAME_WIDTH, GAME_HEIGHT, GAME_COLOR_BIT), g_cSpriteDib(100, 0x00ffffff), g_frameCheck(FRAME_PER_SECOND)
+	g_cScreenDib(GAME_WIDTH, GAME_HEIGHT, GAME_COLOR_BIT), g_cSpriteDib(100, 0x00ffffff), g_frameCheck(FRAME_PER_SECOND, ipHWnd)
 {
 	pHWnd = ipHWnd;
 	readyForNextScene = false;

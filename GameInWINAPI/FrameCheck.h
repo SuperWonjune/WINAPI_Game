@@ -28,21 +28,29 @@ surplusTime이 총 25가 되었으므로 20을 빼주고, 렌더링을 하나 생략한다.
 class FrameCheck
 {
 public:
-	FrameCheck(size_t iFps);
+	FrameCheck(size_t iFps, HWND * ipHWnd);
 	virtual ~FrameCheck();
 
+	// 게임 내에서 매 프레임마다 호출되는 함수.
+	// 프레임을 생략할 상황이 아닌경우 true를 리턴, 생략해야 할 경우 false를 리턴
 	bool checkFrame();
 
+	
 
+private:
+	HWND * pHWnd;
+	// 이전 측정 시간
+	size_t _prevTime;
+	// 현재 측정된 시간
+	size_t _curTime;
 
 	// 한번 프레임 체크를 하고 그 다음 프레임체크를 할 때 까지 걸린 시간.
-	size_t elapsedTime;
+	size_t _elapsedTime;
 
 	// 프레임간 간격이 설정된 ms를 넘어갈 때 그 차이를 저장해놓는 변수
 	// 계속해서 더해간다.
-	size_t surplusTime;	
+	size_t _surplusTime;
 
-private:
 	// 게임 내에 설정된 fps
 	size_t _fps;
 	size_t _timePerFunction;

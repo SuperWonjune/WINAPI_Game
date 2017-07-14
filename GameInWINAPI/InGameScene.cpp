@@ -4,11 +4,16 @@
 #include "InGameScene.h"
 
 
-InGameScene::InGameScene(HWND * ipHWnd) : Scene(ipHWnd)
+InGameScene::InGameScene(HWND * ipHWnd)
+	: Scene(ipHWnd),
+
+	  
+	// FrameCheck 초기화
+	  frame_check(FRAME_RATE, ipHWnd)
 {
 	// 게임 초기화
-	InitGame();
-
+	
+	InitGame(),
 	isGameOver = false;
 }
 
@@ -26,8 +31,12 @@ void InGameScene::update()
 	// 로직
 	Action();
 
-	// 출력
-	draw();
+
+	// 프레임 스킵할 상황이 아닐 경우
+	if (frame_check.checkFrame()) {
+		// 출력
+		draw();
+	}
 
 }
 
@@ -74,6 +83,18 @@ void InGameScene::draw()
 	
 	// 버퍼 flip
 	g_cScreenDib.DrawBuffer(*pHWnd);
+
+	// fps 출력
+	HDC hdc = GetDC(*pHWnd);
+	TCHAR str2[128];
+	int cur_time = timeGetTime();
+	if ((cur_time - prevTime) != 0) {
+		wsprintf(str2, L"%d", 1000 / (cur_time - prevTime));
+		TextOut(hdc, 0, 0, str2, wcslen(str2));
+	}
+	prevTime = timeGetTime();
+
+	ReleaseDC(*pHWnd, hdc);
 }
 
 

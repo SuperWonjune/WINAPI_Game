@@ -4,10 +4,13 @@
 
 #include "Scene.h"
 #include "Player.h"
+#include "FrameCheck.h"
 
 #include <list>
-using namespace std;
 
+#define FRAME_RATE 50
+
+using namespace std;
 
 class InGameScene : public Scene
 {
@@ -21,6 +24,9 @@ public:
 	void draw();
 
 private:
+	FrameCheck frame_check;
+	size_t prevTime;
+
 	BOOL InitGame(void);
 	BOOL LoadSprites(void);
 	// Player 관련 초기화
