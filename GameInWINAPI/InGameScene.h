@@ -25,7 +25,8 @@ public:
 
 private:
 	FrameCheck frame_check;
-	size_t prevTime;
+	DWORD prevTime;
+	DWORD cur_time;
 
 	BOOL InitGame(void);
 	BOOL LoadSprites(void);
@@ -41,7 +42,6 @@ private:
 
 	// 플레이어 포인터
 	Player * pPlayer;
-
 };
 
 

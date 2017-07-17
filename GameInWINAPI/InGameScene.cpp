@@ -33,7 +33,7 @@ void InGameScene::update()
 
 
 	// 프레임 스킵할 상황이 아닐 경우
-	if (frame_check.checkFrame()) {
+	if (frame_check.checkFrame() == true) {
 		// 출력
 		draw();
 	}
@@ -68,6 +68,11 @@ void InGameScene::KeyProcess()
 
 void InGameScene::draw()
 {
+	// fps 출력용 변수
+	static TCHAR printStr[128];
+	static int Frame = 0;
+	static DWORD Tick = 0;
+
 	BYTE *pDest = g_cScreenDib.GetDibBuffer();
 	int iWidth = g_cScreenDib.GetWidth();
 	int iHeight = g_cScreenDib.GetHeight();
@@ -83,17 +88,23 @@ void InGameScene::draw()
 	
 	// 버퍼 flip
 	g_cScreenDib.DrawBuffer(*pHWnd);
+	
+
+
+	// fps 계산
+	cur_time = timeGetTime();
+	Frame++;
+	if (Tick + 1000 < cur_time)
+	{
+		wsprintf(printStr, L"%d", Frame);
+		Tick = timeGetTime();
+		Frame = 0;
+
+	}
 
 	// fps 출력
 	HDC hdc = GetDC(*pHWnd);
-	TCHAR str2[128];
-	int cur_time = timeGetTime();
-	if ((cur_time - prevTime) != 0) {
-		wsprintf(str2, L"%d", 1000 / (cur_time - prevTime));
-		TextOut(hdc, 0, 0, str2, wcslen(str2));
-	}
-	prevTime = timeGetTime();
-
+	TextOut(hdc, 0, 0, printStr, wcslen(printStr));
 	ReleaseDC(*pHWnd, hdc);
 }
 

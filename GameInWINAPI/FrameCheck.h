@@ -40,16 +40,16 @@ public:
 private:
 	HWND * pHWnd;
 	// 이전 측정 시간
-	size_t _prevTime;
+	DWORD _prevTime;
 	// 현재 측정된 시간
-	size_t _curTime;
+	DWORD _curTime;
 
 	// 한번 프레임 체크를 하고 그 다음 프레임체크를 할 때 까지 걸린 시간.
-	size_t _elapsedTime;
+	DWORD _elapsedTime;
 
 	// 프레임간 간격이 설정된 ms를 넘어갈 때 그 차이를 저장해놓는 변수
 	// 계속해서 더해간다.
-	size_t _surplusTime;
+	DWORD _surplusTime;
 
 	// 게임 내에 설정된 fps
 	size_t _fps;

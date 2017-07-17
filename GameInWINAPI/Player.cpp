@@ -3,6 +3,11 @@
 #include "stdafx.h"
 #include "Player.h"
 
+#define dfRANGE_MOVE_TOP	50
+#define dfRANGE_MOVE_LEFT	10
+#define dfRANGE_MOVE_RIGHT	630
+#define dfRANGE_MOVE_BOTTOM	470
+
 
 Player::Player(int x, int y)
 {
@@ -85,19 +90,21 @@ void Player::InputActionProc()
 {
 	switch (m_dwActionCur) {
 
-	// 아무키도 눌러지지 않았을 때
+		// 아무키도 눌러지지 않았을 때
 
 	case dfACTION_STAND:
 		SetActionStand();
 		break;
 
 	case dfACTION_MOVE_LL:
+		if (_x <= dfRANGE_MOVE_LEFT) break;
 		_x -= _player_X_Speed;
 		m_iDirCur = 0;
 
 		SetActionMove();
 		break;
 	case dfACTION_MOVE_LU:
+		if (_x <= dfRANGE_MOVE_LEFT || _y <= dfRANGE_MOVE_TOP) break;
 		_x -= _player_X_Speed;
 		_y -= _player_Y_Speed;
 		m_iDirCur = 0;
@@ -105,11 +112,13 @@ void Player::InputActionProc()
 		SetActionMove();
 		break;
 	case dfACTION_MOVE_UU:
+		if (_y <= dfRANGE_MOVE_TOP) break;
 		_y -= _player_Y_Speed;
 
 		SetActionMove();
 		break;
 	case dfACTION_MOVE_RU:
+		if (_x >= dfRANGE_MOVE_RIGHT || _y <= dfRANGE_MOVE_TOP) break;
 		_x += _player_X_Speed;
 		_y -= _player_Y_Speed;
 		m_iDirCur = 1;
@@ -117,12 +126,14 @@ void Player::InputActionProc()
 		SetActionMove();
 		break;
 	case dfACTION_MOVE_RR:
+		if (_x >= dfRANGE_MOVE_RIGHT) break;
 		_x += _player_X_Speed;
 		m_iDirCur = 1;
 
 		SetActionMove();
 		break;
 	case dfACTION_MOVE_RD:
+		if (_x >= dfRANGE_MOVE_RIGHT || _y >= dfRANGE_MOVE_BOTTOM) break;
 		_x += _player_X_Speed;
 		_y += _player_Y_Speed;
 		m_iDirCur = 1;
@@ -130,11 +141,13 @@ void Player::InputActionProc()
 		SetActionMove();
 		break;
 	case dfACTION_MOVE_DD:
+		if (_y >= dfRANGE_MOVE_BOTTOM) break;
 		_y += _player_X_Speed;
 
 		SetActionMove();
 		break;
 	case dfACTION_MOVE_LD:
+		if (_x <= dfRANGE_MOVE_LEFT || _y >= dfRANGE_MOVE_BOTTOM) break;
 		_x -= _player_X_Speed;
 		_y += _player_Y_Speed;
 		m_iDirCur = 0;
@@ -251,8 +264,10 @@ void Player::SetActionAttack3()
 
 
 
-void Player::CheckBoundary()
+bool Player::CheckOutOfBoundary()
 {
-
-
+	if (_x <= dfRANGE_MOVE_LEFT || _x >= dfRANGE_MOVE_RIGHT || _y <= dfRANGE_MOVE_TOP || _y >= dfRANGE_MOVE_BOTTOM) {
+		return true;
+	}
+	else return false;
 }

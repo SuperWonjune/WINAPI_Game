@@ -25,7 +25,7 @@ public:
 	void SetActionAttack2();
 	void SetActionAttack3();
 
-	void CheckBoundary();
+	bool CheckOutOfBoundary();
 
 protected:
 	DWORD m_dwActionCur;
